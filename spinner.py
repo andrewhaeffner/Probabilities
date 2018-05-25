@@ -22,9 +22,9 @@ def main():
 
     num_of_trials = 10000000
 
-    arcs = [ 1.0/2.0, 1.0/3.0, 1.0/6.0 ] # create three arcs of length 1/2, 1/3, and 1/6 along a circle with unit circumference.
+    #arcs = [ 1.0/2.0, 1.0/3.0, 1.0/6.0 ] # create three arcs of length 1/2, 1/3, and 1/6 along a circle with unit circumference.
 
-    #arcs = [(1.0/3.0), (1.0/3.0) + (1.0/4.0), (), (), ()]
+    arcs = [1.0/3.0, 1.0/4.0, 1.0/5.0, 1.0/6.0, 1.0/20.0]
 
     buckets = dict() # Assignment space for the occurences in each arc.
 
@@ -33,14 +33,14 @@ def main():
 
 
     for i in range(num_of_trials):
-        if i % 100000 == 0:
+        if i % (num_of_trials / 10) == 0:
             print('passing trial # ', i)
         outcome = random()
         buckets[assign(outcome, arcs)] += 1
 
 
     for bucket in buckets:
-        print('Bucket #: ', bucket, ' yields: ', (buckets[bucket]*1.0)/num_of_trials)
+        print('Arc of length: ', arcs[bucket], '\nlanded on with prob: ', (buckets[bucket]*1.0)/num_of_trials)
 
 if __name__ == '__main__':
     main()
