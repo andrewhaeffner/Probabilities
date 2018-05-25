@@ -1,7 +1,5 @@
 from random import random
 
-
-
 def assign(outcome, arcs):
     '''
     returns the index of the proper index to assign
