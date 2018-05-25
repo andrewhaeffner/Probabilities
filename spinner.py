@@ -8,8 +8,9 @@ def assign(outcome, arcs):
     the outcome to.
     '''
     previous = -1
+    threshold = 0
     for i in range(len(arcs)):
-        threshold = arcs[i]
+        threshold += arcs[i]
         if outcome > previous and outcome <= threshold:
             return i
         previous = threshold
@@ -21,11 +22,13 @@ def main():
 
     num_of_trials = 10000000
 
-    arcs = [ .5, (.5 + (1.0/3.0)) ] # create three arcs of length 1/2, 1/3, and 1/6 along a circle with unit circumference.
+    arcs = [ 1.0/2.0, 1.0/3.0, 1.0/6.0 ] # create three arcs of length 1/2, 1/3, and 1/6 along a circle with unit circumference.
+
+    #arcs = [(1.0/3.0), (1.0/3.0) + (1.0/4.0), (), (), ()]
 
     buckets = dict() # Assignment space for the occurences in each arc.
 
-    for i in range(len(arcs)+1):
+    for i in range(len(arcs)):
         buckets[i] = 0
 
 
