@@ -1,5 +1,5 @@
 from random import random
-
+from math import sin, pi
 
 # Exercise 3
 #
@@ -25,6 +25,8 @@ from random import random
 # value of log 2.
 
 in_the_circle = lambda x,y: (x - .5)**2 + (y - .5)**2 <= .25
+under_the_sine = lambda x,y: y < sin(pi * x)
+under_the_inverse = lambda x,y: y < 1.0 / (x + 1.0)
 dummy = lambda x,y: True
 
 def select_satisfying_points(condition, num_of_trials):
@@ -52,8 +54,13 @@ def main():
 
     print('Sanity Check: ', select_satisfying_points(dummy, num_of_trials))
     print('Sanity Check ~250: ', select_satisfying_points(lambda x,y: x < .5 and y < .5, num_of_trials))
-    print('\npi estimate : ', 4.0 * select_satisfying_points(in_the_circle, 1000)/ 1000.0)
 
+    print('\nCircle pi estimate (1000): ', 4.0 * select_satisfying_points(in_the_circle, 1000)/ 1000.0)
+
+
+    print('\nSine pi estimate (10,000): ', 2.0 / (select_satisfying_points(under_the_sine, 10000)/10000.0))
+
+    print('\nLog2 estimate (10,000): ', select_satisfying_points(under_the_inverse, 10000)/10000.0)
 
     
 
