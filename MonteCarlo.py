@@ -24,7 +24,7 @@ from random import random
 # area and use the simulation to estimate the
 # value of log 2.
 
-in_the_circle = lambda x,y: (x - .5)^2 + (y - .5)^2 <= .25
+in_the_circle = lambda x,y: (x - .5)**2 + (y - .5)**2 <= .25
 dummy = lambda x,y: True
 
 def select_satisfying_points(condition, num_of_trials):
@@ -43,7 +43,7 @@ def select_satisfying_points(condition, num_of_trials):
         if condition(x,y):
             counter += 1
 
-    return counter
+    return float(counter)
 
 
 def main():
@@ -52,6 +52,8 @@ def main():
 
     print('Sanity Check: ', select_satisfying_points(dummy, num_of_trials))
     print('Sanity Check ~250: ', select_satisfying_points(lambda x,y: x < .5 and y < .5, num_of_trials))
+    print('\npi estimate : ', 4.0 * select_satisfying_points(in_the_circle, 1000)/ 1000.0)
+
 
     
 
