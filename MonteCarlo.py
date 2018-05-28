@@ -1,5 +1,5 @@
 from random import random
-from math import sin, pi
+from math import sin, pi, log
 
 # Exercise 3
 #
@@ -24,12 +24,11 @@ from math import sin, pi
 # area and use the simulation to estimate the
 # value of log 2.
 
-in_the_circle = lambda x,y: (x - .5)**2 + (y - .5)**2 <= .25
-under_the_sine = lambda x,y: y < sin(pi * x)
-under_the_inverse = lambda x,y: y < 1.0 / (x + 1.0)
-dummy = lambda x,y: True
+in_the_circle = lambda x,y: (x - .5)**2 + (y - .5)**2 <= .25 # circle of radius 1/2.
+under_the_sine = lambda x,y: y < sin(pi * x) # graph of sin(pi*x)
+under_the_inverse = lambda x,y: y < 1.0 / (x + 1.0) # inverse f'n.
 
-def select_satisfying_points(condition, num_of_trials):
+def simulate(condition, num_of_trials):
     '''
     Given a condition and the number of trials,
     randomly selects points within the unit
@@ -48,21 +47,21 @@ def select_satisfying_points(condition, num_of_trials):
     return float(counter)
 
 
-def main():
+if __name__ == '__main__':
 
-    num_of_trials = 1000
+    n = 1000
+    print('\nFinding pi with a circle of r=.5 (' + str(n) + ' random points):')
+    print('pi estimate = ', 4.0 * simulate(in_the_circle, n)/ float(n))
+    print('pi actual   = ', pi)
 
-    print('Sanity Check: ', select_satisfying_points(dummy, num_of_trials))
-    print('Sanity Check ~250: ', select_satisfying_points(lambda x,y: x < .5 and y < .5, num_of_trials))
+    n = 10000
+    print('\nFinding pi with y = sin(pi * x) (' + str(n) + ' random points): ')
+    print('pi estimate = ',2.0 / (simulate(under_the_sine, n)/float(n)))
+    print('pi actual   = ', pi)
 
-    print('\nCircle pi estimate (1000): ', 4.0 * select_satisfying_points(in_the_circle, 1000)/ 1000.0)
-
-
-    print('\nSine pi estimate (10,000): ', 2.0 / (select_satisfying_points(under_the_sine, 10000)/10000.0))
-
-    print('\nLog2 estimate (10,000): ', select_satisfying_points(under_the_inverse, 10000)/10000.0)
+    n = 10000
+    print('\nLog2 estimate with y = 1/(x+1) (' + str(n) + ' random points): ')
+    print('ln(2) estimate = ', simulate(under_the_inverse, n)/float(n))
+    print('ln(2) actual   = ', log(2))
 
     
-
-if __name__ == '__main__':
-    main()
