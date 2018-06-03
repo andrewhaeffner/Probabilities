@@ -18,8 +18,8 @@ def run_trial(start, finish, lam, subintervals, num_of_points):
 
     results = [0 for i in range(subintervals)]
 
-    step = (finish - start) / (subintervals)
-    divisions = [i * step for i in range(subintervals + 1)]
+    bucket_step = (finish - start) / subintervals
+    divisions = [i * bucket_step for i in range(subintervals+1)]
 
     i = 0
     while i < num_of_points:
@@ -36,7 +36,7 @@ def run_trial(start, finish, lam, subintervals, num_of_points):
             i += 1
 
     for event in range(len(results)):
-        results[event] /= (num_of_points * ((finish - start) / (subintervals-1)))
+        results[event] /= (num_of_points * bucket_step)
 
     return results
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     start = 0
     finish = 120
     lam = 30 # lam signifies the average time between events for an exponential distribution of probabilities.
-    subintervals = 240
+    subintervals = 24
     num_of_points = 100000 # Number of random outcomes selected.
 
     x = np.linspace(start, finish, 256)
@@ -56,9 +56,13 @@ if __name__ == '__main__':
 
     results = run_trial(start, finish, lam, subintervals, num_of_points)
 
-    step = (finish - start) / (subintervals-1) # for equally spaced out rectangles.
+    # The histogram step has to be different from the bucket step
+    # because the histogram uses start and finish as endpoints AND
+    # delineators. Adjusting the subintervals down by 1 creates
+    # the proper spacing for rectangles. I found this frustrating.
+    hist_step = (finish - start) / (subintervals-1) 
 
-    divisions = [(i * step) for i in range(subintervals)]
+    divisions = [(i * hist_step) for i in range(subintervals)]
 
     ax.plot(x,y)
     ax.hist(divisions, subintervals, weights=results)
