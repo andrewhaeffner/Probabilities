@@ -67,6 +67,10 @@ def run_exponential_sim(ax):
     # the curve will not. Good parameters mask this
     # flaw.
 
+    curve = 'Ideal Curve'
+    data = 'Simulation Results'
+    ax.set_title('Exponential Distribution')
+
     start = 0
     finish = 120
     lam = 30 # lam signifies the average time between events for an exponential distribution of probabilities.
@@ -87,8 +91,10 @@ def run_exponential_sim(ax):
 
     divisions = [(i * hist_step) for i in range(subintervals)]
 
-    ax.plot(x,y)
-    ax.hist(divisions, subintervals, weights=results)
+    ax.plot(x,y, label=curve)
+    ax.hist(divisions, subintervals, weights=results, edgecolor='black',label=data)
+
+    ax.legend()
 
 def run_triangular_sim(ax):
     '''
@@ -100,6 +106,11 @@ def run_triangular_sim(ax):
 
     Returns nothing; plots histogram and ideal graph.
     '''
+
+    curve = 'Ideal Curve'
+    data = 'Simulation Results'
+    ax.set_title('Arbitrary (Triangular) Distribution')
+
     start = 0
     finish = 1
     subintervals = 20
@@ -116,14 +127,25 @@ def run_triangular_sim(ax):
 
     divisions = [(i * hist_step) for i in range(subintervals)]
 
-    ax.plot(x,y)
-    ax.hist(divisions, subintervals, weights=results)
+    ax.plot(x,y, label=curve)
+    ax.hist(divisions, subintervals, weights=results, edgecolor='black',label=data)
+
+    ax.legend()
 
 if __name__ == '__main__':
 
-    fig, (ax1, ax2) = plt.subplots(2,1)
+    fig, (ax1, ax2) = plt.subplots(2,1, figsize=(12,10))
+
+    print('Simulating Exponential Probability Distribution... ', end='')
 
     run_exponential_sim(ax1)
+
+    print('done.')
+    print('Simulating "Triangular" Probability Distribution... ', end='')
+
     run_triangular_sim(ax2)
+
+    print('done.')
+    print('Displaying Histograms of simulation results.')
 
     plt.show()
