@@ -17,7 +17,7 @@ def create_exponential_outcome_function(lam):
 def triangular_outcome_function():
     while True:
         outcome = (random(), random())
-        if outcome[0] + outcome[1] < 1:
+        if outcome[0] + outcome[1] < 1: # self-select outcomes not in the triangle.
             return outcome[0]
 
 
@@ -52,12 +52,26 @@ def run_trial(start, finish, subintervals, outcome_generator, num_of_points):
     return results
 
 def run_exponential_sim(ax):
+    '''
+    Given a subplot, plots the results of a simulation that
+    models an exponential distribution. 
+
+    Returns nothing.
+    '''
+
+    # Note that the sim assumes that points ONLY 
+    # should fall in the range from (start, finish)
+    # so it will eliminate points not in the range.
+    # The result of this is that the area under the
+    # bar graph will always be 1 while that under 
+    # the curve will not. Good parameters mask this
+    # flaw.
 
     start = 0
     finish = 120
     lam = 30 # lam signifies the average time between events for an exponential distribution of probabilities.
     subintervals = 24
-    num_of_points = 100000 # Number of random outcomes selected.
+    num_of_points = 10000 # Number of random outcomes selected.
 
     x = np.linspace(start, finish, 256)
     k = 1/lam
@@ -66,12 +80,9 @@ def run_exponential_sim(ax):
     f = create_exponential_outcome_function(lam)
 
     results = run_trial(start, finish, subintervals, f, num_of_points)
-    #results = run_exponential_trial(start, finish, lam, subintervals, num_of_points)
 
-    # The histogram step has to be different from the bucket step
-    # because the histogram uses start and finish as endpoints AND
-    # delineators. Adjusting the subintervals down by 1 creates
-    # the proper spacing for rectangles. I found this frustrating.
+    # The histogram step has to be different from the bucket step because
+    # the histogram uses start and finish as endpoints AND delineators.
     hist_step = (finish - start) / (subintervals-1) 
 
     divisions = [(i * hist_step) for i in range(subintervals)]
@@ -79,12 +90,20 @@ def run_exponential_sim(ax):
     ax.plot(x,y)
     ax.hist(divisions, subintervals, weights=results)
 
-
 def run_triangular_sim(ax):
+    '''
+    Given a subplot plots the results of a sim that
+    models a non-uniform distribution. Namely, it
+    simulates the distribution of x values from random
+    points in R^2 that fall in the triangle bounded
+    by (0,0) (0,1) & (1,0).
+
+    Returns nothing; plots histogram and ideal graph.
+    '''
     start = 0
     finish = 1
-    subintervals = 10
-    num_of_points = 10000 # Number of random outcomes selected.
+    subintervals = 20
+    num_of_points = 100000 # Number of random outcomes selected.
 
     x = np.linspace(start, finish, 256)
     y = 2 - 2*x # graph that fits the histogram.
@@ -106,7 +125,5 @@ if __name__ == '__main__':
 
     run_exponential_sim(ax1)
     run_triangular_sim(ax2)
-
-
 
     plt.show()
