@@ -2,20 +2,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 from random import random
 
-def gen_outcome(lam):
+def gen_exponential_outcome(lam):
     '''
     Generates an outcome for an exponential
     distribution, given a lambda.
     '''
     return -lam*np.log(random())
 
-def run_trial(start, finish, lam, subintervals, num_of_points):
+def create_exponential_outcome_function(lam):
+    def f():
+        return -lam*np.log(random())
+    return f
+
+def triangular_outcome_function():
+    while True:
+        outcome = (random(), random())
+        if outcome[0] + outcome[1] < 1:
+            return outcome[0]
+
+
+def run_trial(start, finish, subintervals, outcome_generator, num_of_points):
     '''
     Runs a trial given a set of parameters.
     Returns the area scaled heights of rectangles
     for a histogram.
     '''
-
     results = [0 for i in range(subintervals)]
 
     bucket_step = (finish - start) / subintervals
@@ -23,7 +34,7 @@ def run_trial(start, finish, lam, subintervals, num_of_points):
 
     i = 0
     while i < num_of_points:
-        outcome = gen_outcome(lam)
+        outcome = outcome_generator()
         if start < outcome < finish:
             prev = 0
             j = 1
@@ -40,9 +51,7 @@ def run_trial(start, finish, lam, subintervals, num_of_points):
 
     return results
 
-if __name__ == '__main__':
-
-    fig, ax = plt.subplots()
+def run_exponential_sim(ax):
 
     start = 0
     finish = 120
@@ -54,7 +63,10 @@ if __name__ == '__main__':
     k = 1/lam
     y = (k)*np.exp(-k*x) # graph that fits the histogram.
 
-    results = run_trial(start, finish, lam, subintervals, num_of_points)
+    f = create_exponential_outcome_function(lam)
+
+    results = run_trial(start, finish, subintervals, f, num_of_points)
+    #results = run_exponential_trial(start, finish, lam, subintervals, num_of_points)
 
     # The histogram step has to be different from the bucket step
     # because the histogram uses start and finish as endpoints AND
@@ -66,5 +78,35 @@ if __name__ == '__main__':
 
     ax.plot(x,y)
     ax.hist(divisions, subintervals, weights=results)
+
+
+def run_triangular_sim(ax):
+    start = 0
+    finish = 1
+    subintervals = 10
+    num_of_points = 10000 # Number of random outcomes selected.
+
+    x = np.linspace(start, finish, 256)
+    y = 2 - 2*x # graph that fits the histogram.
+
+    f = triangular_outcome_function
+
+    results = run_trial(start, finish, subintervals, f, num_of_points)
+
+    hist_step = (finish - start) / (subintervals-1) 
+
+    divisions = [(i * hist_step) for i in range(subintervals)]
+
+    ax.plot(x,y)
+    ax.hist(divisions, subintervals, weights=results)
+
+if __name__ == '__main__':
+
+    fig, (ax1, ax2) = plt.subplots(2,1)
+
+    run_exponential_sim(ax1)
+    run_triangular_sim(ax2)
+
+
 
     plt.show()
